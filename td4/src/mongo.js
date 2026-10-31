@@ -11,6 +11,16 @@ async function printAllContacts(collection) {
     }
 }
 
+export async function getAllContacts() {
+    const client = new MongoClient(MONGO_URL);
+    await client.connect();
+    const db = client.db(DABASE_NAME);
+    const contacts = db.collection(collection);
+    const results = await contacts.find().toArray();
+    await client.close();
+    return results;
+}
+
 async function main() {
     let client;
     try {
