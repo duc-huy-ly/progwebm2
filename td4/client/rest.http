@@ -16,3 +16,13 @@ Content-Type: application/json
   "name": "Alice",
   "age": 25
 }
+
+
+### Update a contact
+PUT http://localhost:8080/contact/{{uid}}
+Content-Type: application/json
+
+{
+  "name": "Bob l'eponge",
+  "age": 26
+}

@@ -1,7 +1,8 @@
 import express from 'express';
 import morgan from 'morgan';
 import { loadEnvFile } from 'node:process';
-import { getAllContacts, mongoCreateContact } from './mongo.js';
+import { ObjectId } from 'mongodb';
+import { getAllContacts, mongoCreateContact, mongoUpdateContact } from './mongo.js';
 
 loadEnvFile();
 const host = process.env.HOST;
@@ -82,6 +83,34 @@ async function createContact(req, res) {
     catch (error) {
         console.error('Unable to create contact:', error);
         res.status(500).json({ error: 'Unable to create contact' });
+    }
+}
+
+app.put('/contact/:uid', updateContact);
+
+async function updateContact(req, res) {
+    try {
+        const { uid } = req.params;
+        const { name, age } = req.body;
+        if (!ObjectId.isValid(uid) || typeof name !== 'string' || typeof age !== 'number') {
+            return res.status(400).json({
+                error: 'uid must be a valid ID, name must be a string, and age must be a number',
+            });
+        }
+
+        const updatedContact = await mongoUpdateContact(uid, name, age);
+        if (updatedContact) {
+            res.json({
+                id: updatedContact._id.toString(),
+                name: updatedContact.name,
+                age: updatedContact.age,
+            });
+        } else {
+            res.status(404).json({ error: 'Contact not found' });
+        }
+    } catch (error) {
+        console.error('Unable to update contact:', error);
+        res.status(500).json({ error: 'Unable to update contact' });
     }
 }
 
