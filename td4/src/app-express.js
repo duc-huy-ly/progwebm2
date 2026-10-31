@@ -24,7 +24,7 @@ app.get('/user/:uid', function(req, res) {
   res.render('user', {uid: req.params.uid});
 });
 
-app.get('/user/', getUsers);
+app.get('/contact/', getUsers);
 
 async function getUsers(req, res) {
   try {
@@ -39,6 +39,7 @@ async function getUsers(req, res) {
     res.status(500).json({ error: 'Unable to retrieve contacts' });
   }
 }
+
 
 app.use(function(req, res){
   res.status(404).send('Page introuvable !');
