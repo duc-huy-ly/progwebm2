@@ -1,7 +1,7 @@
 import express from 'express';
 import morgan from 'morgan';
 import { loadEnvFile } from 'node:process';
-import { getAllContacts } from './mongo.js';
+import { getAllContacts, mongoCreateContact } from './mongo.js';
 
 loadEnvFile();
 const host = process.env.HOST;
@@ -9,6 +9,7 @@ const port = process.env.PORT;
 
 const app = express();
 app.use(morgan('combined'));
+app.use(express.json());
 
 app.set('view engine', 'ejs');
 
@@ -57,6 +58,30 @@ async function getContact(req, res) {
     } catch (error) {
         console.error('Unable to retrieve contact:', error);
         res.status(500).json({ error: 'Unable to retrieve contact' });
+    }
+}
+
+app.post('/contact', createContact);
+
+async function createContact(req, res) {
+    try {
+        const { name, age } = req.body;
+        if (typeof name !== 'string' || typeof age !== 'number') {
+            return res.status(400).json({
+                error: 'name must be a string and age must be a number',
+            });
+        }
+
+        const newContact = await mongoCreateContact(name, age);
+        res.status(201).json({
+            id: newContact._id.toString(),
+            name: newContact.name,
+            age: newContact.age,
+        });
+    }
+    catch (error) {
+        console.error('Unable to create contact:', error);
+        res.status(500).json({ error: 'Unable to create contact' });
     }
 }
 

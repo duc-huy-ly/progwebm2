@@ -7,3 +7,12 @@ GET http://localhost:8080/contact/
 @uid=6ae5c136aa37644ecf48b4b8
 ### Get contact
 GET http://localhost:8080/contact/{{uid}}
+
+### Create a contact
+POST http://localhost:8080/contact
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "age": 25
+}
