@@ -1,2 +1,32 @@
 ### Default URL
 GET http://localhost:8080/
+
+### Fetch all users
+GET http://localhost:8080/contact/
+
+@uid=6ae5c136aa37644ecf48b4b8
+### Get contact
+GET http://localhost:8080/contact/{{uid}}
+
+### Create a contact
+POST http://localhost:8080/contact
+Content-Type: application/json
+
+{
+  "name": "Alice",
+  "age": 25
+}
+
+
+### Update a contact
+PUT http://localhost:8080/contact/{{uid}}
+Content-Type: application/json
+
+{
+  "name": "Bob l'eponge",
+  "age": 26
+}
+
+
+### Delete a contact
+DELETE http://localhost:8080/contact/6ae5ef2f9cf26cec3c12ad89
