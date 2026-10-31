@@ -29,6 +29,17 @@ export async function mongoCreateContact(name, age) {
     }
 }
 
+export async function mongoDeleteContact(id) {
+    const client = new MongoClient(MONGO_URL);
+    await client.connect();
+    try {
+        const contacts = client.db(DATABASE_NAME).collection(COLLECTION_NAME);
+        return await contacts.deleteOne({ _id: new ObjectId(id) });
+    } finally {
+        await client.close();
+    }
+}
+
 // Given a contact ID, update the contact with the new name and age.
 export async function mongoUpdateContact(id, name, age) {
     const client = new MongoClient(MONGO_URL);

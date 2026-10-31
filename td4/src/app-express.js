@@ -2,7 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import { loadEnvFile } from 'node:process';
 import { ObjectId } from 'mongodb';
-import { getAllContacts, mongoCreateContact, mongoUpdateContact } from './mongo.js';
+import { getAllContacts, mongoCreateContact, mongoUpdateContact, mongoDeleteContact } from './mongo.js';
 
 loadEnvFile();
 const host = process.env.HOST;
@@ -111,6 +111,29 @@ async function updateContact(req, res) {
     } catch (error) {
         console.error('Unable to update contact:', error);
         res.status(500).json({ error: 'Unable to update contact' });
+    }
+}
+
+app.delete('/contact/:uid', deleteContact);
+
+async function deleteContact(req, res) {
+    try {
+        const { uid } = req.params;
+        if (!ObjectId.isValid(uid)) {
+            return res.status(400).json({
+                error: 'uid must be a valid ID',
+            });
+        }
+
+        const result = await mongoDeleteContact(uid);
+        if (result.deletedCount === 1) {
+            res.json({ message: 'Contact deleted successfully' });
+        } else {
+            res.status(404).json({ error: 'Contact not found' });
+        }
+    } catch (error) {
+        console.error('Unable to delete contact:', error);
+        res.status(500).json({ error: 'Unable to delete contact' });
     }
 }
 
