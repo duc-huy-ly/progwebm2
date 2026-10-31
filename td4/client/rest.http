@@ -4,5 +4,6 @@ GET http://localhost:8080/
 ### Fetch all users
 GET http://localhost:8080/contact/
 
-
-### Get
+@uid=6ae5c136aa37644ecf48b4b8
+### Get contact
+GET http://localhost:8080/contact/{{uid}}

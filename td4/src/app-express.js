@@ -24,9 +24,10 @@ app.get('/user/:uid', function(req, res) {
   res.render('user', {uid: req.params.uid});
 });
 
-app.get('/contact/', getUsers);
+app.get('/contact/', getContacts);
+app.get('/contact/:uid', getContact);
 
-async function getUsers(req, res) {
+async function getContacts(req, res) {
   try {
     const contacts = await getAllContacts();
     res.json(contacts.map((contact) => ({
@@ -40,6 +41,24 @@ async function getUsers(req, res) {
   }
 }
 
+async function getContact(req, res) {
+    try {
+        const contacts = await getAllContacts();
+        const contact = contacts.find(c => c._id.toString() === req.params.uid);
+        if (contact) {
+            res.json({
+                id: contact._id.toString(),
+                name: contact.name,
+                age: contact.age,
+            });
+        } else {
+            res.status(404).json({ error: 'Contact not found' });
+        }
+    } catch (error) {
+        console.error('Unable to retrieve contact:', error);
+        res.status(500).json({ error: 'Unable to retrieve contact' });
+    }
+}
 
 app.use(function(req, res){
   res.status(404).send('Page introuvable !');
