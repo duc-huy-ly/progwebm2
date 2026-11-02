@@ -30,12 +30,15 @@ export async function getContactById(id) {
    }
 }
 
-// Add a new contact, returns the added contact
+// Add a new contact, returns the added contact. Body contains name and age fields.
 export async function addContact(body) {
   try {
-      const contact = new Contact(body);
-      await contact.save();
-      return { success: true, data: contact };
+    const contact = new Contact({
+        name: body.name,
+        age: body.age,
+    })
+    await contact.save();
+    return { success: true, data: contact };
   } catch (err) {
       return { success: false, message: "Error adding contact: " + err };
   }
