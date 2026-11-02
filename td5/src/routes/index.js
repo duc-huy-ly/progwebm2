@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { getAllContacts, getContactById, updateContact, removeContact, addContact } from '../controllers/contactController.js';
+import { registerUser , loginUser} from '../controllers/authController.js';
+import { getAllUsers} from '../controllers/userController.js';
 
 const router = Router();
 
@@ -130,6 +132,96 @@ router.route('/contacts/:id')
 router.route('/contacts')
     .post(async (req, res) => {
         let response = await addContact(req.body);
+        if (response.success == true) {
+            res.status(200).json(response);
+        } else {
+            res.status(404).json(response);
+        }
+    });
+
+/**
+ * @openapi 
+ * /auth/register:
+ *   post:
+ *     description: Register a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: John Doe
+ *               email:
+ *                 type: string
+ *                 example: john.doe@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       '200':
+ *         description: Returns the registered user
+ *       '400':
+ *         description: Error registering user
+ */
+router.route('/auth/register')
+    .post(async (req, res) => {
+        let response = await registerUser(req.body);
+        if (response.success == true) {
+            res.status(200).json(response);
+        } else {
+            res.status(400).json(response);
+        }
+    });
+/**
+ * @openapi
+ * /auth/login:
+ *   post:
+ *     description: Login a user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: john.doe@example.com
+ *               password:
+ *                 type: string
+ *                 example: password123
+ *     responses:
+ *       '200':
+ *         description: Returns the logged in user and token
+ *       '400':
+ *         description: Error logging in user
+ */
+router.route('/auth/login')
+    .post(async (req, res) => {
+        let response = await loginUser(req.body);
+        if (response.success == true) {
+            res.status(200).json(response);
+        } else {
+            res.status(400).json(response);
+        }
+    });
+/**
+ * @openapi
+ * /users:
+ *   get:
+ *     description: Get all users
+ *     responses:
+ *       '200':
+ *         description: Returns all users
+ *       '404':
+ *         description: Error fetching users
+ */
+router.route('/users')
+    .get(async (req, res) => {
+        let response = await getAllUsers();
         if (response.success == true) {
             res.status(200).json(response);
         } else {
