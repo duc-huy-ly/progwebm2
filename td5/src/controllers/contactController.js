@@ -19,20 +19,57 @@ export async function getAllContacts() {
 
 // Get contact by Id
 export async function getContactById(id) {
-  // todo
+   try {
+       const contact = await Contact.findById(id);
+       if (!contact) {
+           return { success: false, message: "Contact not found" };
+       }
+       return { success: true, data: contact };
+   } catch (err) {
+       return { success: false, message: "Error retrieving contact: " + err };
+   }
 }
 
-// Add a new contact, returns the added contact
+// Add a new contact, returns the added contact. Body contains name and age fields.
 export async function addContact(body) {
-  // todo
+  try {
+    const contact = new Contact({
+        name: body.name,
+        age: body.age,
+    })
+    await contact.save();
+    return { success: true, data: contact };
+  } catch (err) {
+      return { success: false, message: "Error adding contact: " + err };
+  }
 }
  
 // Update an existing contact
 export async function updateContact(id, name = null, age = null) {
-   // todo
+    try {
+        const contact = await Contact.findById(id);
+        if (!contact) {
+            return { success: false, message: "Contact not found" };
+        }
+        if (name !== null) contact.name = name;
+        if (age !== null) contact.age = age;
+        await contact.save();
+        return { success: true, data: contact };
+    } catch (err) {
+        return { success: false, message: "Error updating contact: " + err };
+    }
 }
     
 // Remove an existing contact
 export async function removeContact(id) {
-  // todo
+    try {
+        const contact = await Contact.findById(id);
+        if (!contact) {
+            return { success: false, message: "Contact not found" };
+        }
+        await Contact.deleteOne({ _id: id });
+        return { success: true, message: "Contact removed successfully" };
+    } catch (err) {
+        return { success: false, message: "Error removing contact: " + err };
+    }
 }
