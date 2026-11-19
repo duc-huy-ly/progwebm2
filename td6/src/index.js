@@ -1,10 +1,10 @@
 import express from 'express';
 
 const app = express();
-const PORT = 80;
-
+const PORT = 8999;
+console.log("Server starting !")
 app.get('/', (req, res) => {
-    res.send('Bonjour !');
+    res.send('Bonjour maxi, je suis cofdsfntant!');
 });
 
 app.listen(PORT, () => {
